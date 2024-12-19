@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Support Website</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+            background-color: #24232e;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .col-header {
+            padding: 10px;
+            border-radius: 8px 8px 0 0;
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .pomodoro-header { background-color: #000000; }
+        .todo-header { background-color: #4f4d45; color: rgb(255, 251, 251); }
+        .spotify-header { background-color: #1b1a1a; }
+        .timer {
+            font-size: 3rem;
+            text-align: center;
+            margin: 20px 0;
+        }
+        iframe {
+            width: 100%;
+            height: 320px;
+            border-radius: 12px;
+        }
+        .btn-spacing button {
+            margin: 5px;
+        }
+        #task-list .list-group-item {
+            color: white;
+            background-color: #4f4d45;
+        }
+        #task-list .completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        .motivation {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .stats {
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Learning Assistance website</h1>
+
+    <div class="row">
+        <!-- Pomodoro Timer -->
+        <div class="col-md-4">
+            <div class="col-header pomodoro-header">
+                <h3>Pomodoro Timer</h3>
+            </div>
+            <div>
+                <label>Set Work Time (minutes):</label>
+                <input type="number" id="work-time" class="form-control mb-2" value="25" min="1">
+                <label>Set Break Time (minutes):</label>
+                <input type="number" id="break-time" class="form-control mb-3" value="5" min="1">
+                <div class="timer" id="timer">25:00</div>
+                <div class="motivation" id="motivation"></div>
+                <div class="text-center btn-spacing">
+                    <button class="btn btn-primary" id="start-timer">Start</button>
+                    <button class="btn btn-primary" id="pause-timer">Pause</button>
+                    <button class="btn btn-primary" id="reset-timer">Reset</button>
+                </div>
+                <div class="stats" id="stats">
+                    <p><strong>Total Time Spent Learning:</strong> <span id="total-learn-time">0</span> minutes</p>
+                    <p><strong>Total Break Time:</strong> <span id="total-break-time">0</span> minutes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- To-Do List -->
+        <div class="col-md-4">
+            <div class="col-header todo-header">
+                <h3>To-Do List</h3>
+            </div>
+            <div>
+                <input type="text" id="new-task" class="form-control mb-2" placeholder="Enter a new task">
+                <button class="btn btn-primary w-100" id="add-task">Add Task</button>
+                <ul class="list-group mt-3" id="task-list"></ul>
+            </div>
+        </div>
+
+        <!-- Spotify Player -->
+        <div class="col-md-4">
+            <div class="col-header spotify-header">
+                <h3>Spotify Player</h3>
+            </div>
+            <div>
+                <label>Spotify Playlist URL:</label>
+                <input type="text" id="spotify-url" class="form-control mb-2" placeholder="You can change your Spotify playlist here!">
+                <button class="btn btn-primary w-100" id="load-spotify">Load Playlist</button>
+                <div id="spotify-player" class="mt-3">
+                    <!-- Default Spotify Embed -->
+                    <iframe src="https://open.spotify.com/embed/playlist/1bWJ5IVOlGSl0l1ob7mV1S?utm_source=generator"  frameborder="0" allow="encrypted-media"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // POMODORO TIMER
+    let timerInterval;
+    let isPaused = false;
+    let timeLeft;
+    let isBreakTime = false;
+
+    let totalLearnTime = 0; // Track total learning time
+    let totalBreakTime = 0; // Track total break time
+
+    const motivationMessages = [
+        "Keep going! You're doing great!",
+        "Success is the sum of small efforts, repeated day in and day out.",
+        "The future belongs to those who believe in the beauty of their dreams.",
+        "Focus on your goals, not your obstacles.",
+        "Believe in yourself and all that you are.",
+        "Don't stop when you're tired. Stop when you're done!"
+    ];
+
+    const displayTimer = (minutes, seconds) => {
+        document.getElementById('timer').innerText =
+            `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    };
+
+    const displayMotivation = () => {
+        const randomMessage = motivationMessages[Math.floor(Math.random() * motivationMessages.length)];
+        document.getElementById('motivation').innerText = randomMessage;
+    };
+
+    const updateStats = () => {
+        document.getElementById('total-learn-time').innerText = totalLearnTime;
+        document.getElementById('total-break-time').innerText = totalBreakTime;
+    };
+
+    const saveTimerState = () => {
+        localStorage.setItem('pomodoroTimer', JSON.stringify({
+            timeLeft,
+            isPaused,
+            isBreakTime,
+            totalLearnTime,
+            totalBreakTime
+        }));
+    };
+
+    const loadTimerState = () => {
+        const savedState = JSON.parse(localStorage.getItem('pomodoroTimer'));
+        if (savedState) {
+            timeLeft = savedState.timeLeft;
+            isPaused = savedState.isPaused;
+            isBreakTime = savedState.isBreakTime;
+            totalLearnTime = savedState.totalLearnTime;
+            totalBreakTime = savedState.totalBreakTime;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            displayTimer(minutes, seconds);
+            updateStats();
+        } else {
+            resetTimer(); // Ensure timer is reset to work time when there's no saved state
+        }
+    };
+
+    const startTimer = () => {
+        if (timeLeft === undefined) {
+            timeLeft = parseInt(document.getElementById('work-time').value) * 60;
+        }
+        if (!timerInterval && !isPaused) {
+            timerInterval = setInterval(() => {
+                if (!isPaused && timeLeft > 0) {
+                    timeLeft--;
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    displayTimer(minutes, seconds);
+                    saveTimerState();
+                } else if (timeLeft === 0) {
+                    if (isBreakTime) {
+                        // Break time is over, switch to work time
+                        totalBreakTime += parseInt(document.getElementById('break-time').value);
+                        timeLeft = parseInt(document.getElementById('work-time').value) * 60;
+                        isBreakTime = false; // Switch to work time
+                        alert('Break Time is over! Time to work.');
+                        displayMotivation();
+                        updateStats();
+                    } else {
+                        // Work time is over, switch to break time
+                        totalLearnTime += parseInt(document.getElementById('work-time').value);
+                        timeLeft = parseInt(document.getElementById('break-time').value) * 60;
+                        isBreakTime = true; // Switch to break time
+                        alert('Work time is over! Take a break.');
+                        displayMotivation();
+                        updateStats();
+                    }
+                    // Automatically restart the next session
+                    startTimer(); // Restart the timer automatically after the session ends
+                    clearInterval(timerInterval); // Clear the current interval
+                    timerInterval = null; // Reset the interval
+                    saveTimerState(); // Save the current timer state
+                }
+            }, 1000);
+        }
+    };
+
+    const resetTimer = () => {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        isPaused = false;
+        if (isBreakTime) {
+            // Reset to break time if we're in break session
+            timeLeft = parseInt(document.getElementById('break-time').value) * 60;
+            displayTimer(parseInt(document.getElementById('break-time').value), 0);
+        } else {
+            // Reset to work time if we're in work session
+            timeLeft = parseInt(document.getElementById('work-time').value) * 60;
+            displayTimer(parseInt(document.getElementById('work-time').value), 0);
+        }
+        displayMotivation(); // Display new motivation when reset
+        localStorage.removeItem('pomodoroTimer');
+        updateStats();
+    };
+
+    document.getElementById('start-timer').addEventListener('click', () => {
+        if (!timerInterval) {
+            startTimer(); // Start new timer only when it's not running
+        } else {
+            isPaused = false; // Resume the timer if paused
+        }
+    });
+
+    document.getElementById('pause-timer').addEventListener('click', () => {
+        isPaused = true; // Pause the timer
+    });
+
+    document.getElementById('reset-timer').addEventListener('click', resetTimer);
+
+    window.addEventListener('load', loadTimerState);
+
+    // TO-DO LIST
+    const taskList = document.getElementById('task-list');
+
+    const saveTasksToLocalStorage = () => {
+        const tasks = [];
+        document.querySelectorAll('#task-list .list-group-item').forEach(item => {
+            tasks.push({
+                text: item.querySelector('span').innerText,
+                completed: item.classList.contains('completed')
+            });
+        });
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    };
+
+    const loadTasksFromLocalStorage = () => {
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks.forEach(task => {
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item d-flex justify-content-between';
+            if (task.completed) listItem.classList.add('completed');
+            listItem.innerHTML = `<span>${task.text}</span>
+                                  <div>
+                                      <button class="btn btn-sm btn-success">✔</button>
+                                      <button class="btn btn-sm btn-danger">✖</button>
+                                  </div>`; 
+
+            listItem.querySelector('.btn-success').addEventListener('click', () => {
+                listItem.classList.toggle('completed');
+                saveTasksToLocalStorage();
+            });
+
+            listItem.querySelector('.btn-danger').addEventListener('click', () => {
+                listItem.remove();
+                saveTasksToLocalStorage();
+            });
+
+            taskList.appendChild(listItem);
+        });
+    };
+
+    document.getElementById('add-task').addEventListener('click', () => {
+        const taskText = document.getElementById('new-task').value;
+        if (taskText) {
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item d-flex justify-content-between';
+            listItem.innerHTML = `<span>${taskText}</span>
+                                  <div>
+                                      <button class="btn btn-sm btn-success">✔</button>
+                                      <button class="btn btn-sm btn-danger">✖</button>
+                                  </div>`; 
+
+            listItem.querySelector('.btn-success').addEventListener('click', () => {
+                listItem.classList.toggle('completed');
+                saveTasksToLocalStorage();
+            });
+
+            listItem.querySelector('.btn-danger').addEventListener('click', () => {
+                listItem.remove();
+                saveTasksToLocalStorage();
+            });
+
+            taskList.appendChild(listItem);
+            document.getElementById('new-task').value = ''; // Clear input field
+            saveTasksToLocalStorage();
+        }
+    });
+
+    window.addEventListener('load', loadTasksFromLocalStorage);
+
+    // SPOTIFY
+    document.getElementById('load-spotify').addEventListener('click', () => {
+        const url = document.getElementById('spotify-url').value;
+        const spotifyPlayer = document.getElementById('spotify-player');
+        if (url) {
+            spotifyPlayer.innerHTML = `<iframe src="${url}" frameborder="0" allow="encrypted-media"></iframe>`;
+        }
+    });
+</script>
+</body>
+</html>
