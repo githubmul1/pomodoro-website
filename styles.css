@@ -1,0 +1,69 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #fff;
+    background-color: #24232e;
+    padding: 20px;
+    border-radius: 8px;
+}
+.col-header {
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.pomodoro-header {
+    background-color: #000000;
+}
+.todo-header {
+    background-color: #4f4d45;
+    color: rgb(255, 251, 251);
+}
+.spotify-header {
+    background-color: #1b1a1a;
+}
+.timer {
+    font-size: 3rem;
+    text-align: center;
+    margin: 20px 0;
+}
+iframe {
+    width: 100%;
+    height: 320px;
+    border-radius: 12px;
+}
+.btn-spacing button {
+    margin: 5px;
+}
+#task-list .list-group-item {
+    color: white;
+    background-color: #4f4d45;
+}
+#task-list .completed {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+.motivation {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+    margin: 20px 0;
+}
+.stats {
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
