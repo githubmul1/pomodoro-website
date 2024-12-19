@@ -3,8 +3,6 @@ Learning Assistance Website
 
 Berikut adalah penjelasan cara kerja website Learning Assistance:
 
-Berikut adalah penjelasan yang lebih lengkap dan rinci tentang cara kerja website yang diberikan pada kode tersebut:
-
 ### 1. **Pomodoro Timer**
    **Tujuan**: Fitur ini membantu pengguna untuk mengelola waktu belajar menggunakan teknik Pomodoro, di mana sesi belajar dilakukan dalam interval waktu tertentu diikuti dengan waktu istirahat. 
 
