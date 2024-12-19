@@ -3,95 +3,87 @@ Learning Assistance Website
 
 Berikut adalah penjelasan cara kerja website Learning Assistance:
 
- 1. Pomodoro Timer
-Fungsi: Membantu pengguna untuk mengelola waktu belajar menggunakan teknik Pomodoro (sesi belajar diikuti dengan sesi istirahat).
+Berikut adalah penjelasan yang lebih lengkap dan rinci tentang cara kerja website yang diberikan pada kode tersebut:
 
-Cara Kerja:
-- Input Waktu:
-  - Pengguna dapat mengatur durasi waktu belajar (default: 25 menit) dan waktu istirahat (default: 5 menit).
-  - Input ini diambil dari elemen `<input>` dengan ID `work-time` dan `break-time`.
+### 1. **Pomodoro Timer**
+   **Tujuan**: Fitur ini membantu pengguna untuk mengelola waktu belajar menggunakan teknik Pomodoro, di mana sesi belajar dilakukan dalam interval waktu tertentu diikuti dengan waktu istirahat. 
 
-- Timer Berjalan:
-  - Saat tombol Start ditekan:
-    - Timer mulai menghitung mundur dari waktu yang telah ditentukan.
-    - Setiap detik, timer diperbarui dan ditampilkan pada elemen dengan ID `timer`.
-  - Ketika waktu belajar habis:
-    - Timer secara otomatis beralih ke sesi istirahat, dan total waktu belajar bertambah.
-  - Ketika waktu istirahat habis:
-    - Timer kembali ke sesi belajar, dan total waktu istirahat bertambah.
+   - **Pengaturan Waktu**:
+     - Pengguna dapat mengatur durasi waktu belajar (work time) dan durasi waktu istirahat (break time) menggunakan input *number* di bagian "Set Work Time (minutes)" dan "Set Break Time (minutes)".
+     - Waktu default untuk sesi belajar adalah 25 menit dan untuk istirahat adalah 5 menit.
+   
+   - **Menjalankan Timer**:
+     - Ketika tombol "Start" ditekan, timer mulai berjalan. Timer akan menghitung mundur setiap detik dari waktu yang ditentukan.
+     - Setiap detik yang berlalu akan ditampilkan dalam format menit:detik di bagian **Timer**.
+     - Timer akan beralih antara sesi belajar dan sesi istirahat ketika waktu untuk sesi saat ini habis. Misalnya, setelah sesi belajar selesai, website akan memberi pemberitahuan dan timer akan beralih ke sesi istirahat.
 
-- **Penyimpanan Data:
-  - Status timer (sisa waktu, total waktu belajar/istirahat, dll.) disimpan di localStorage, sehingga tidak hilang meskipun pengguna menutup browser.
+   - **Status Timer**:
+     - Jika pengguna menekan tombol "Pause", timer akan berhenti sementara (pause) dan bisa dilanjutkan dengan tombol "Start" lagi.
+     - Tombol "Reset" akan mengembalikan timer ke status awal (baik sesi belajar atau sesi istirahat) sesuai pengaturan awal yang telah dimasukkan.
 
-- Tombol Tambahan:
-  - Pause: Menghentikan sementara timer.
-  - Reset: Mengatur ulang timer ke waktu awal (baik belajar atau istirahat).
+   - **Pesan Motivasi**:
+     - Setelah setiap sesi selesai, website akan menampilkan pesan motivasi secara acak di bagian **Motivation**. Pesan ini berfungsi untuk memotivasi pengguna agar tetap semangat dalam belajar.
 
-- Motivasi:
-  - Setelah setiap sesi selesai, pesan motivasi acak ditampilkan untuk memberi semangat kepada pengguna.
+   - **Statistik**:
+     - Setiap kali sesi kerja atau sesi istirahat selesai, total waktu belajar dan total waktu istirahat akan diperbarui.
+     - Data statistik ditampilkan di bagian **Stats**, yang menunjukkan berapa lama pengguna telah belajar dan beristirahat sejak terakhir kali timer di-reset atau dimulai.
+     - Data statistik disimpan di **localStorage**, sehingga ketika halaman dimuat ulang, data waktu yang telah terakumulasi tidak hilang.
 
----
+   - **Penyimpanan dan Pemulihan Status**:
+     - Status timer disimpan di **localStorage** menggunakan `localStorage.setItem` setiap detik, termasuk informasi tentang waktu yang tersisa, status apakah timer dalam kondisi pause, dan apakah sedang dalam sesi kerja atau istirahat.
+     - Ketika halaman dimuat ulang, status timer dimuat kembali menggunakan `localStorage.getItem`, dan timer akan melanjutkan dari posisi terakhir.
 
-2. To-Do List
-Fungsi: Membantu pengguna mencatat tugas-tugas yang harus diselesaikan.
+### 2. **To-Do List**
+   **Tujuan**: Fitur ini memungkinkan pengguna untuk mencatat tugas-tugas yang perlu diselesaikan, serta memberikan kemampuan untuk menandai tugas sebagai selesai atau menghapusnya.
 
-Cara Kerja:
-- Menambahkan Tugas:
-  - Pengguna mengetik tugas di kolom input dan menekan tombol Add Task.
-  - Tugas baru ditambahkan sebagai elemen daftar dalam elemen `<ul>` dengan ID `task-list`.
-  
-- Interaksi dengan Tugas:
-  - Setiap tugas memiliki dua tombol:
-    - ✔ (Complete): Menandai tugas sebagai selesai dengan menambahkan garis coret dan efek visual.
-    - ✖ (Delete): Menghapus tugas dari daftar.
+   - **Menambahkan Tugas**:
+     - Pengguna dapat menambahkan tugas dengan mengetikkan deskripsi tugas pada input **"Enter a new task"** dan menekan tombol **"Add Task"**. Tugas tersebut akan muncul dalam daftar di bagian bawah di dalam elemen `<ul>`.
+   
+   - **Menandai Tugas Selesai**:
+     - Setiap item tugas yang ditambahkan memiliki dua tombol: satu untuk menandai tugas sebagai selesai ("✔") dan satu lagi untuk menghapus tugas ("✖").
+     - Ketika tombol **"✔"** ditekan, tugas akan diberi tanda garis melalui (strike-through) dan ditandai sebagai selesai. Status ini akan disimpan dalam `localStorage`.
+   
+   - **Menghapus Tugas**:
+     - Tombol **"✖"** digunakan untuk menghapus tugas dari daftar. Begitu tugas dihapus, perubahan tersebut akan disimpan dalam `localStorage`.
+   
+   - **Penyimpanan dan Pemulihan Data**:
+     - Daftar tugas disimpan dalam **localStorage** untuk memastikan bahwa ketika halaman dimuat ulang, daftar tugas tetap ada, dan status setiap tugas (apakah selesai atau belum) akan dipulihkan.
 
-- **Penyimpanan Data:
-  - Daftar tugas disimpan di localStorage dalam bentuk array JSON. Ini memastikan daftar tetap ada meskipun pengguna menutup browser.
+### 3. **Spotify Player**
+   **Tujuan**: Fitur ini memungkinkan pengguna untuk memutar playlist Spotify langsung dari halaman web menggunakan *iframe*.
 
-- Muat Data:
-  - Saat halaman dimuat, daftar tugas diambil dari localStorage dan ditampilkan kembali.
+   - **Memasukkan URL Playlist**:
+     - Pengguna dapat memasukkan URL playlist Spotify yang diinginkan di dalam input **"Spotify Playlist URL"**.
+     - Setelah memasukkan URL, pengguna dapat menekan tombol **"Load Playlist"** untuk memuat playlist tersebut di dalam *iframe* yang terdapat di bagian bawah.
+   
+   - **Format URL**:
+     - URL yang dimasukkan oleh pengguna akan dipastikan dalam format yang benar untuk pemutaran *embed*. Jika URL yang dimasukkan tidak dalam format embed, URL tersebut akan diubah dengan menambahkan string `/embed/` untuk membuatnya sesuai dengan format yang diperlukan untuk diputar dalam *iframe*.
+   
+   - **Memutar Playlist**:
+     - Setelah URL yang valid dimasukkan, playlist Spotify akan ditampilkan di dalam *iframe* dan mulai diputar di dalam website.
 
+### 4. **Penyimpanan dan Pemulihan Status Secara Umum**
+   Website ini menggunakan **localStorage** untuk menyimpan berbagai data yang berkaitan dengan status Pomodoro Timer, daftar tugas, dan bahkan URL Spotify Playlist yang dimasukkan.
 
+   - **Data yang Disimpan**:
+     - Untuk **Pomodoro Timer**, data yang disimpan meliputi waktu yang tersisa dalam sesi (baik sesi kerja maupun istirahat), apakah timer sedang dalam status pause, status sesi (apakah sedang belajar atau istirahat), serta total waktu belajar dan istirahat.
+     - Untuk **To-Do List**, data yang disimpan meliputi daftar tugas, serta apakah setiap tugas sudah diselesaikan atau belum.
+   
+   - **Pemulihan Status**:
+     - Ketika halaman dimuat ulang, data yang telah disimpan di **localStorage** akan dipulihkan. Misalnya, waktu yang tersisa pada timer akan dipulihkan, daftar tugas yang telah ditambahkan akan dimuat kembali, dan playlist Spotify yang dimasukkan akan tetap tampil di *iframe*.
 
-3. Spotify Player
-Fungsi: Memutar playlist musik dari Spotify untuk menemani belajar.
+### 5. **Interaksi Antar Fitur**
+   Ketiga fitur ini bekerja secara terpisah, namun mereka dapat saling melengkapi dalam meningkatkan pengalaman belajar pengguna:
+   - **Pomodoro Timer** memberikan sesi fokus untuk belajar yang dibarengi dengan waktu istirahat untuk menjaga konsentrasi.
+   - **To-Do List** membantu pengguna merencanakan dan melacak tugas yang perlu diselesaikan selama waktu belajar.
+   - **Spotify Player** menyediakan musik atau playlist yang bisa diputar untuk menemani sesi belajar, menambah kenyamanan dan suasana yang kondusif untuk fokus.
 
-Cara Kerja:
-- **Memuat Playlist:
-  - Pengguna dapat memasukkan URL playlist Spotify ke dalam kolom input.
-  - URL diubah ke format embed (`/playlist/` menjadi `/embed/playlist/`) dan ditampilkan di dalam elemen `<iframe>`.
+### 6. **Tata Letak dan Tampilan**
+   - **Bootstrap** digunakan untuk mempermudah tata letak dan membuat halaman menjadi responsif, sehingga tampilan akan menyesuaikan dengan ukuran layar perangkat yang digunakan.
+   - **CSS Kustom** digunakan untuk memberikan desain yang lebih menarik dengan penyesuaian warna dan gaya pada elemen-elemen seperti tombol, header, timer, dan daftar tugas.
 
-- **Pemutar Default:
-  - Jika pengguna tidak memasukkan URL baru, player default akan menampilkan playlist bawaan.
+### 7. **Cara Kerja Interaksi Pengguna**
+   - Pengguna dapat menyesuaikan pengaturan waktu pada Pomodoro Timer, menambahkan tugas ke To-Do List, dan memuat playlist Spotify sesuai preferensi mereka.
+   - Setiap interaksi (misalnya, menekan tombol start, menambahkan tugas, memuat playlist) akan mempengaruhi tampilan atau status website, dan perubahan tersebut disimpan agar pengguna tidak kehilangan data saat memuat ulang halaman.
 
----
-
-Fitur Tambahan:
-1. Tampilan Responsif:
-   - Menggunakan Bootstrap, website dapat diakses dengan baik di berbagai ukuran layar (desktop, tablet, atau smartphone).
-
-2. Desain yang Menarik:
-   - Elemen seperti motivasi, timer, daftar tugas, dan player Spotify dirancang agar mudah digunakan dan menarik secara visual.
-
-3. Penggunaan Local Storage:
-   - Data timer dan daftar tugas disimpan di browser, sehingga pengguna tidak kehilangan data meskipun mereka menutup atau me-refresh halaman.
-
----
-
-Alur Penggunaan Website:
-1. Pomodoro Timer:
-   - Atur waktu belajar/istirahat, lalu tekan tombol Start untuk memulai sesi.
-   - Ikuti sesi belajar dan istirahat sesuai waktu yang telah diatur.
-
-2. To-Do List:
-   - Tambahkan daftar tugas yang ingin diselesaikan.
-   - Tandai tugas yang selesai atau hapus jika tidak diperlukan lagi.
-
-     
-
-3. **Spotify Player:**
-   - Masukkan URL playlist favorit Anda untuk menikmati musik selama belajar.
-
----
-
-Jika Anda ingin pengembangan lebih lanjut (seperti menambahkan statistik lebih detail atau fitur lain), beri tahu saya! 😊
+Dengan begitu, website ini memberikan pengalaman belajar yang lebih terstruktur dengan manajemen waktu yang jelas, pengorganisasian tugas yang rapi, serta suasana belajar yang lebih menyenangkan dengan musik.
